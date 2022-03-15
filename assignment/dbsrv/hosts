@@ -1,5 +1,5 @@
 192.168.0.1	main mainvm 
-192.168.0.10	webserv
+192.168.0.10	websrv cs.websrv.com
 192.168.0.20	dbserv
 127.0.0.1	localhost
 127.0.1.1	student-VirtualBox

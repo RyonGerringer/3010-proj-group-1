@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+  
+<html>
+<head>
+    <title>CS Dashboard</title>
+</head>
+  
+<!-- Adding some style to table (OPTIONAL) -->
+<style>
+td {
+border: 1px solid #ddd;
+padding: 8px;
+}
+tr:nth-child(even){background-color: #f2f2f2;}
+tr:hover{background-color: #ddd;}
+th{
+padding-top:12px;
+padding-bottom: 12px;
+text-align: left;
+background-color:#545461;
+color: white;
+}
+
+</style>
+  
+<body>
+  
+<table style="width: 100%; padding-right:10px;">
+<!-- Table headers -->
+<tr>      
+<!-- For loop logic of jinja template -->
+{%for col_name in col_names%}
+	
+  
+<!-- table rows -->
+
+    <th>{{col_name}}</th>
+    
+  
+{%endfor%}
+  
+</tr>
+{% for row in faculty%}
+<tr> 
+{% for col in row%}
+<td>{{col}}</td>
+{%endfor%}
+</tr>
+{%endfor%}
+
+</table>
+  
+  
+</body>
+</html>
