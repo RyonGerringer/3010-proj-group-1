@@ -1,0 +1,66 @@
+from flask import Flask, render_template, flash, request, url_for, redirect
+import psycopg2
+from flask_navigation import Navigation
+app = Flask(__name__)
+nav = Navigation(app)
+
+
+
+
+
+conn = psycopg2.connect(
+	host='192.168.0.20',
+	database='csdashboard',
+	user='webuser1',
+	password='ecu1')
+
+
+def createQuery(search):
+	try:
+		str = f"SELECT * FROM faculty WHERE LOWER(first_name) LIKE  '%{search}%';"
+	#str = f"SELECT * FROM faculty WHERE faculty_id LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(faculty_id) UNION SELECT * FROM faculty WHERE LOWER(prefix) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(first_name) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(middle_initial) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(last_name) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(email) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(phone) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(office) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(research) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(rank) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(remarks) LIKE '{search}' UNION SELECT * FROM faculty WHERE LOWER(employed) LIKE '{search}';"
+	#str = f"SELECT * FROM faculty;"
+	
+	except:
+		str= 'SELECT * FROM faculty'
+	return str
+@app.route('/search', methods=["POST"])
+def search():
+	searchInput = request.form.get("search")
+	
+	if request.method == 'POST':
+		
+		if not searchInput:
+			flash('Search')
+		else:
+			try:
+				cur = conn.cursor()
+				query = createQuery(searchInput.lower())
+				cur.execute(query)
+				faculty = cur.fetchall()
+				col_names = [desc[0] for desc in cur.description]
+				return render_template("index.html", col_names=col_names, faculty = faculty)
+
+			except:
+				print('error search')
+				return render_template("index.html")
+	#sreturn render_template("search.html",input=query)
+@app.route('/',methods=["GET","POST"])
+def create():
+	
+	
+	cur = conn.cursor()
+	cur.execute("SELECT * from faculty;")
+	faculty = cur.fetchall()
+	col_names = [desc[0] for desc in cur.description]
+	
+	return render_template("index.html", col_names=col_names, faculty = faculty)
+
+			
+ 
+
+
+
+#def search():
+if __name__ == "__main__":
+	app.run()
